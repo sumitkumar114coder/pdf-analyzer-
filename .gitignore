@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local Database and Uploads
+backend/database/research_assistant.db
+backend/uploads/
+*.index
+
+# OS & Editors
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
