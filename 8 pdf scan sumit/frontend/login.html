@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script src="/assets/js/auth.js"></script>
+  <script>
+    // Redirect logged in users
+    requireGuest();
+  </script>
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="/" class="auth-logo">
+          <svg viewBox="0 0 24 24" stroke-width="2.5" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span>AI Research Assistant</span>
+        </a>
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Log in to access your library and notes</p>
+      </div>
+
+      <form class="auth-form" id="login-form">
+        <!-- Username -->
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <div class="input-wrapper">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input type="text" id="username" class="form-input" placeholder="Enter username" required autocomplete="username">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+        </div>
+
+        <!-- Remember me -->
+        <div class="auth-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me">
+            <span>Remember me</span>
+          </label>
+          <!-- Forgot Password demo trigger -->
+          <a href="#" class="auth-forgot" onclick="showToast('Password recovery is coming soon.', 'info')">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-btn" id="submit-btn">Log In</button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="/signup.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const usernameInput = document.getElementById('username').value.trim();
+      const passwordInput = document.getElementById('password').value;
+      const rememberMeInput = document.getElementById('remember-me').checked;
+      
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Logging in...";
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: usernameInput,
+            password: passwordInput,
+            remember_me: rememberMeInput
+          })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.detail || "Authentication failed.");
+        }
+
+        saveSession(data.access_token, data.username, data.email);
+        showToast("Logged in successfully! Redirecting...", "success");
+        
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 1000);
+
+      } catch (err) {
+        showToast(err.message, "danger");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Log In";
+      }
+    });
+  </script>
+</body>
+</html>

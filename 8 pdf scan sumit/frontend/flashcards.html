@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Flashcards – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <link rel="stylesheet" href="/assets/css/chat.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <header class="dashboard-header animate-fadein">
+        <div class="welcome-msg">
+          <h2 id="active-doc-title">Study Flashcards</h2>
+          <p id="active-doc-subtitle">Please select a PDF file from the sidebar selector to start generating flashcard decks.</p>
+        </div>
+        <div class="header-actions" id="cards-header-actions" style="display: none; flex-wrap: wrap; gap: 0.5rem;">
+          <select id="cards-diff-select" class="doc-dropdown" style="max-width: 120px;">
+            <option value="Easy">Easy</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+          <button class="btn btn-outline btn-sm" id="download-cards-btn" onclick="triggerDownload('flashcards')">Export MD</button>
+          <button class="btn btn-primary btn-sm" id="generate-cards-btn" onclick="generateFlashcards()">Generate Deck</button>
+        </div>
+      </header>
+
+      <!-- Active Flashcard Workspace -->
+      <div id="cards-workspace-area" style="display: none;" class="flashcard-deck-container animate-slideup">
+        
+        <!-- Welcome Prompt -->
+        <div id="cards-welcome-panel" style="text-align: center; padding: 2rem 0; background-color: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); width: 100%; max-width: 600px;">
+          <p style="color: var(--text-tertiary);">Select your deck difficulty above and click <strong>Generate Deck</strong> to compile study flashcards.</p>
+        </div>
+
+        <!-- Skeleton Loaders -->
+        <div id="cards-loading" style="display: none; width: 100%; max-width: 600px;">
+          <div class="skeleton" style="height: 320px; border-radius: var(--radius-lg);"></div>
+        </div>
+
+        <!-- Interactive 3D Card Play Field -->
+        <div id="cards-play-field" style="display: none; width: 100%;">
+          
+          <div class="flashcard-perspective">
+            <div class="flashcard" id="interactive-card" onclick="flipActiveCard()">
+              
+              <!-- Card Front -->
+              <div class="flashcard-face flashcard-front">
+                <span class="card-label">Front</span>
+                <div class="card-text" id="card-front-text">Question / Concept prompt goes here</div>
+                <span class="card-hint">Click card to reveal answer</span>
+              </div>
+
+              <!-- Card Back -->
+              <div class="flashcard-face flashcard-back">
+                <span class="card-label">Back</span>
+                <div class="card-text" id="card-back-text">Answer explanation details go here</div>
+                <span class="card-hint">Click card to hide answer</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Navigation controls -->
+          <div style="margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+            <div class="deck-navigation">
+              <button class="btn btn-secondary btn-sm" onclick="navigateCard(-1)" id="card-prev-btn" style="padding: 0.5rem 1rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                Prev
+              </button>
+              
+              <span class="deck-count" id="card-count-text">Card 1 of 10</span>
+              
+              <button class="btn btn-secondary btn-sm" onclick="navigateCard(1)" id="card-next-btn" style="padding: 0.5rem 1rem;">
+                Next
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Aux actions -->
+            <button class="btn btn-outline btn-sm" onclick="shuffleCardDeck()" style="gap: 0.35rem;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                <line x1="4" y1="4" x2="9" y2="9"/>
+              </svg>
+              Shuffle Deck
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- No Active Document selected -->
+      <div class="animate-slideup" id="no-doc-warning" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 1rem;">
+        <div class="upload-icon" style="margin-bottom: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">No Active Document Selected</h3>
+        <p style="color: var(--text-secondary); max-width: 450px; margin-bottom: 1.5rem;">
+          Select one of your uploaded PDF materials from the dropdown menu in the sidebar to start generating flashcard decks.
+        </p>
+        <a href="/upload.html" class="btn btn-primary">Go to Library</a>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/study.js"></script>
+</body>
+</html>

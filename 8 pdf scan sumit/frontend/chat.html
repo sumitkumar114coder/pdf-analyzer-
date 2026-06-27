@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Q&amp;A Chat – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <link rel="stylesheet" href="/assets/css/chat.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder (injected by app.js) -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content" style="padding: 1.5rem; display: flex; flex-direction: column;">
+      
+      <!-- Chat Header -->
+      <header class="dashboard-header animate-fadein" style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+        <div class="welcome-msg">
+          <h2 id="active-doc-title">AI Study Chat</h2>
+          <p id="active-doc-subtitle">Please select a PDF file from the sidebar selector to start asking questions.</p>
+        </div>
+        <!-- Chat session list selector -->
+        <div class="header-actions">
+          <select id="chat-session-select" class="doc-dropdown" style="max-width: 200px; display: none;" onchange="loadSessionHistory(this.value)">
+            <option value="">-- Recent Chats --</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Active Chat Area -->
+      <div class="chat-workspace" id="chat-workspace-area" style="display: none;">
+        
+        <!-- Messages Display Panel -->
+        <div class="chat-messages-container" id="chat-messages-box">
+          <!-- Dynamic chatbot bubbles go here -->
+        </div>
+
+        <!-- Chat Input Form -->
+        <div class="chat-input-container">
+          <form class="chat-input-form" id="chat-form">
+            <textarea id="chat-input-text" class="chat-input" placeholder="Ask a question about this document..." required></textarea>
+            <button type="submit" class="chat-send-btn" id="chat-send-btn">
+              <svg viewBox="0 0 24 24" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"/><polyline points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- No Active Document Warning State -->
+      <div class="animate-slideup" id="no-doc-warning" style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 1rem;">
+        <div class="upload-icon" style="margin-bottom: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">No Active Document Selected</h3>
+        <p style="color: var(--text-secondary); max-width: 450px; margin-bottom: 1.5rem;">
+          Select one of your uploaded PDF materials from the dropdown menu in the sidebar to start querying it with RAG.
+        </p>
+        <a href="/upload.html" class="btn btn-primary">Go to Library</a>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/chat.js"></script>
+</body>
+</html>

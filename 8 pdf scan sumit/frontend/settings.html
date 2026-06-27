@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <header class="dashboard-header animate-fadein">
+        <div class="welcome-msg">
+          <h2>Settings</h2>
+          <p>Manage your account settings, visual appearance themes, and Gemini API keys.</p>
+        </div>
+      </header>
+
+      <div class="animate-slideup" style="max-width: 900px; display: flex; flex-direction: column; gap: 3rem;">
+        
+        <!-- SECTION 1: VISUAL THEME -->
+        <div class="settings-grid">
+          <div class="settings-section-info">
+            <h3>Appearance</h3>
+            <p>Select your preferred visual mode for studying. Toggles light or dark mode styles.</p>
+          </div>
+          <div class="settings-card">
+            <div class="theme-switcher">
+              <button class="theme-btn" id="theme-light-btn" onclick="setTheme('light')">
+                <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <span>Light Theme</span>
+              </button>
+              <button class="theme-btn" id="theme-dark-btn" onclick="setTheme('dark')">
+                <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+                <span>Dark Theme</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: AI KEYS -->
+        <div class="settings-grid">
+          <div class="settings-section-info">
+            <h3>Gemini API Key</h3>
+            <p>
+              Bring your own API key to power study queries and summaries. 
+              Leave empty to use the system default key (if configured in environment).
+            </p>
+          </div>
+          <div class="settings-card">
+            <form id="key-settings-form" class="auth-form" style="gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="gemini-key">API Key</label>
+                <div class="input-wrapper" style="width: 100%;">
+                  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--text-tertiary);">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" id="gemini-key" class="form-input" placeholder="Enter your Gemini API key (starts with AIza...)" style="padding-left: 2.75rem;">
+                </div>
+              </div>
+              <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="togglePasswordVisibility('gemini-key')">Show Key</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="save-key-btn">Save Key</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- SECTION 3: PROFILE UPDATES -->
+        <div class="settings-grid">
+          <div class="settings-section-info">
+            <h3>Profile &amp; Credentials</h3>
+            <p>Update your email address or configure a new password for your account logins.</p>
+          </div>
+          <div class="settings-card">
+            <form id="profile-settings-form" class="auth-form" style="gap: 1.25rem;">
+              <!-- Email -->
+              <div class="form-group">
+                <label class="form-label" for="profile-email">Email Address</label>
+                <div class="input-wrapper">
+                  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--text-tertiary);">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  <input type="email" id="profile-email" class="form-input" required placeholder="you@example.com">
+                </div>
+              </div>
+              
+              <!-- Password -->
+              <div class="form-group">
+                <label class="form-label" for="profile-pwd">New Password (leave empty to keep current)</label>
+                <div class="input-wrapper">
+                  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--text-tertiary);">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <input type="password" id="profile-pwd" class="form-input" placeholder="••••••••" minlength="6">
+                </div>
+              </div>
+              
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-primary btn-sm" id="save-profile-btn">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function togglePasswordVisibility(id) {
+      const input = document.getElementById(id);
+      if (input) {
+        const isPwd = input.type === "password";
+        input.type = isPwd ? "text" : "password";
+        event.target.innerText = isPwd ? "Hide Key" : "Show Key";
+      }
+    }
+
+    async function loadSettingsData() {
+      try {
+        const response = await fetch('/api/auth/me', {
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error("Failed to load user settings.");
+
+        const data = await response.json();
+        
+        // Fill profile inputs
+        document.getElementById("profile-email").value = data.email;
+        
+        // Set API key if user has custom key
+        if (data.has_custom_key) {
+          document.getElementById("gemini-key").value = data.gemini_api_key;
+        }
+
+      } catch (err) {
+        showToast(err.message, "danger");
+      }
+    }
+
+    // Save API Key Event
+    document.getElementById("key-settings-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const keyVal = document.getElementById("gemini-key").value.trim();
+      const saveBtn = document.getElementById("save-key-btn");
+      
+      saveBtn.disabled = true;
+      saveBtn.innerText = "Saving...";
+
+      try {
+        const response = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ gemini_api_key: keyVal })
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.detail || "Failed to save API key.");
+        }
+
+        showToast("Gemini API key updated successfully.", "success");
+      } catch (err) {
+        showToast(err.message, "danger");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "Save Key";
+      }
+    });
+
+    // Save Profile Credentials Event
+    document.getElementById("profile-settings-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const emailVal = document.getElementById("profile-email").value.trim();
+      const pwdVal = document.getElementById("profile-pwd").value;
+      const saveBtn = document.getElementById("save-profile-btn");
+      
+      saveBtn.disabled = true;
+      saveBtn.innerText = "Saving...";
+
+      const requestBody = { email: emailVal };
+      if (pwdVal.trim() !== "") {
+        requestBody.password = pwdVal;
+      }
+
+      try {
+        const response = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: getAuthHeaders(),
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.detail || "Failed to update profile.");
+        }
+
+        showToast("Profile credentials updated successfully.", "success");
+        
+        // Reset password input
+        document.getElementById("profile-pwd").value = "";
+        
+        // Update user storage
+        const user = JSON.parse(localStorage.getItem(USER_INFO_KEY) || '{}');
+        user.email = emailVal;
+        localStorage.setItem(USER_INFO_KEY, JSON.stringify(user));
+        
+      } catch (err) {
+        showToast(err.message, "danger");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = "Save Changes";
+      }
+    });
+  </script>
+</body>
+</html>

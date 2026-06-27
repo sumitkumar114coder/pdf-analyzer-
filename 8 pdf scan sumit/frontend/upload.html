@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Study Materials – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder (injected by app.js) -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <header class="dashboard-header animate-fadein">
+        <div class="welcome-msg">
+          <h2>Upload Study Materials</h2>
+          <p>Add PDF papers, books, or notes to your research collection. Max file size: 100MB.</p>
+        </div>
+      </header>
+
+      <div class="card animate-slideup" style="max-width: 800px; margin-bottom: 2rem;">
+        <div class="card-body" style="padding: 2.5rem;">
+          
+          <!-- Drag and Drop Target -->
+          <div class="upload-zone" id="drop-zone">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <div class="upload-texts">
+              <span class="upload-title">Drag &amp; drop your study PDF here</span>
+              <span class="upload-desc">or click to browse your local files</span>
+            </div>
+            <input type="file" id="file-input" accept="application/pdf" style="display: none;">
+            <button class="btn btn-secondary upload-btn">Browse Files</button>
+          </div>
+
+          <!-- Upload Queue Progress list -->
+          <div class="upload-progress-list" id="progress-list">
+            <!-- Dynamically populated upload items will go here -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Current Library List -->
+      <div class="card animate-slideup" style="max-width: 800px; animation-delay: 0.1s;">
+        <div class="card-header">
+          <h3 class="card-title">My Collection</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-wrapper">
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Length</th>
+                  <th>Size</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="upload-table-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-tertiary);">Loading your library...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/upload.js"></script>
+</body>
+</html>

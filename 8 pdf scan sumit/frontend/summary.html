@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Summary – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <link rel="stylesheet" href="/assets/css/chat.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <header class="dashboard-header animate-fadein">
+        <div class="welcome-msg">
+          <h2 id="active-doc-title">Document Summary</h2>
+          <p id="active-doc-subtitle">Please select a PDF file from the sidebar selector to start compiling summaries.</p>
+        </div>
+        <div class="header-actions" id="summary-header-actions" style="display: none;">
+          <button class="btn btn-outline btn-sm" id="download-summary-btn" onclick="triggerDownload('summary')">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export MD
+          </button>
+          <button class="btn btn-primary btn-sm" id="generate-summary-btn" onclick="generateSummary()">Generate AI Summary</button>
+        </div>
+      </header>
+
+      <!-- Active Summary Workspace -->
+      <div id="summary-workspace-area" style="display: none;" class="animate-slideup">
+        
+        <!-- Tab Navigation Links -->
+        <div class="summary-tabs-nav">
+          <div class="tab-link active" onclick="switchSummaryTab(this, 'tab-short')">Overview</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-medium')">Medium</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-detailed')">Detailed Breakdown</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-bullets')">Key Takeaways</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-chapter')">Sections Summary</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-simple')">Explain Like I'm 5</div>
+          <div class="tab-link" onclick="switchSummaryTab(this, 'tab-revision')">Revision Guide</div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="card" style="margin-bottom: 2.5rem;">
+          <div class="card-body">
+            
+            <!-- Skeleton loaders -->
+            <div id="summary-loading" style="display: none; padding: 2rem 0;">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text" style="width: 90%;"></div>
+              <div class="skeleton skeleton-text" style="width: 85%;"></div>
+              <div class="skeleton skeleton-text" style="width: 80%;"></div>
+              <div class="skeleton skeleton-text" style="width: 95%;"></div>
+            </div>
+
+            <!-- Tab 1: Short -->
+            <div class="summary-tab-content active summary-text-block" id="tab-short">
+              <p style="color: var(--text-tertiary);">Click the <strong>Generate AI Summary</strong> button above to analyze this document and compile study guides.</p>
+            </div>
+
+            <!-- Tab 2: Medium -->
+            <div class="summary-tab-content summary-text-block" id="tab-medium"></div>
+
+            <!-- Tab 3: Detailed -->
+            <div class="summary-tab-content summary-text-block" id="tab-detailed"></div>
+
+            <!-- Tab 4: Bullets -->
+            <div class="summary-tab-content summary-text-block" id="tab-bullets"></div>
+
+            <!-- Tab 5: Sections -->
+            <div class="summary-tab-content summary-text-block" id="tab-chapter"></div>
+
+            <!-- Tab 6: Simple -->
+            <div class="summary-tab-content summary-text-block" id="tab-simple"></div>
+
+            <!-- Tab 7: Revision -->
+            <div class="summary-tab-content summary-text-block" id="tab-revision"></div>
+
+          </div>
+        </div>
+
+        <!-- Keywords & Formulas Deck -->
+        <div class="section-header" style="text-align: left; margin-bottom: 1.5rem;" id="keywords-header-sec">
+          <h2 class="section-title" style="font-size: 1.5rem;">Important Terms, Concepts &amp; Formulas</h2>
+        </div>
+        <div class="keywords-grid" id="keywords-grid-box">
+          <!-- Populated by JS -->
+        </div>
+
+      </div>
+
+      <!-- No Active Document Selected Warning -->
+      <div class="animate-slideup" id="no-doc-warning" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 1rem;">
+        <div class="upload-icon" style="margin-bottom: 1.5rem;">
+          <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">No Active Document Selected</h3>
+        <p style="color: var(--text-secondary); max-width: 450px; margin-bottom: 1.5rem;">
+          Select one of your uploaded PDF materials from the dropdown menu in the sidebar to start compiling summaries.
+        </p>
+        <a href="/upload.html" class="btn btn-primary">Go to Library</a>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/assets/js/study.js"></script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity History – AI Research Assistant</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <header class="dashboard-header animate-fadein">
+        <div class="welcome-msg">
+          <h2>Activity History</h2>
+          <p>Review and search through your uploads, downloads, AI chats, and generated quizzes logs.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline btn-sm" onclick="clearAllHistoryLogs()" id="clear-all-btn" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);">
+            Clear All History
+          </button>
+        </div>
+      </header>
+
+      <!-- Search Activity Form -->
+      <div class="card animate-slideup" style="max-width: 800px; margin-bottom: 2rem;">
+        <div class="card-body" style="padding: 1.25rem 1.5rem;">
+          <div class="input-wrapper" style="width: 100%;">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--text-tertiary);">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="history-search-input" class="form-input" placeholder="Search activity description (e.g. 'mcq', 'lecture_notes')..." style="padding-left: 2.75rem;" oninput="debounceSearchHistory(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- History Table List -->
+      <div class="card animate-slideup" style="max-width: 800px; animation-delay: 0.1s;">
+        <div class="card-body">
+          <div class="table-wrapper">
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">Action</th>
+                  <th>Description</th>
+                  <th>Timestamp</th>
+                  <th style="width: 50px;"></th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-tertiary);">Loading history logs...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    let searchTimeout = null;
+
+    // Load logs at startup
+    window.addEventListener("load", () => {
+      loadHistoryRecords("");
+    });
+
+    /**
+     * Debounces live input search to prevent spamming server
+     */
+    function debounceSearchHistory(val) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        loadHistoryRecords(val);
+      }, 300);
+    }
+
+    async function loadHistoryRecords(queryText = "") {
+      const tableBody = document.getElementById("history-table-body");
+      if (!tableBody) return;
+
+      try {
+        const response = await fetch(`/api/history?query=${encodeURIComponent(queryText)}`, {
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error("Failed to load activity logs.");
+
+        const logs = await response.json();
+        
+        if (logs.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-tertiary); padding: 3rem 1rem;">
+                No matching history logs found.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = "";
+        logs.forEach(log => {
+          const dateStr = new Date(log.created_at).toLocaleDateString(undefined, {
+            year: 'numeric', month: 'short', day: 'numeric'
+          }) + " " + new Date(log.created_at).toLocaleTimeString(undefined, {
+            hour: '2-digit', minute: '2-digit'
+          });
+
+          // Resolve action labels and color accents
+          let badgeHTML = "";
+          if (log.action_type === "upload") {
+            badgeHTML = `<span class="keyword-type-badge keyword-type-definition">Upload</span>`;
+          } else if (log.action_type === "chat") {
+            badgeHTML = `<span class="keyword-type-badge keyword-type-formula" style="background-color: rgba(16,185,129,0.12)">Q&amp;A</span>`;
+          } else if (log.action_type === "summary") {
+            badgeHTML = `<span class="keyword-type-badge keyword-type-concept">Summary</span>`;
+          } else if (log.action_type === "download") {
+            badgeHTML = `<span class="keyword-type-badge keyword-type-important_term">Export</span>`;
+          } else {
+            badgeHTML = `<span class="keyword-type-badge" style="background-color: var(--bg-tertiary); color: var(--text-secondary);">${log.action_type}</span>`;
+          }
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${badgeHTML}</td>
+            <td style="font-weight: 500;">${log.description}</td>
+            <td style="color: var(--text-tertiary); font-size: 0.85rem;">${dateStr}</td>
+            <td>
+              <button class="action-btn action-btn-delete" onclick="deleteSingleHistoryLog(${log.id})" title="Delete log entry">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+
+      } catch (err) {
+        showToast(err.message, "danger");
+      }
+    }
+
+    async function deleteSingleHistoryLog(id) {
+      try {
+        const response = await fetch(`/api/history/${id}`, {
+          method: "DELETE",
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error("Failed to delete log entry.");
+
+        showToast("Log entry cleared.", "success");
+        loadHistoryRecords(document.getElementById("history-search-input").value);
+      } catch (err) {
+        showToast(err.message, "danger");
+      }
+    }
+
+    async function clearAllHistoryLogs() {
+      if (!confirm("Are you sure you want to clear your entire activity log history? This will NOT delete your uploaded PDFs, but will wipe the audit trail. This cannot be undone.")) return;
+
+      try {
+        const response = await fetch("/api/history", {
+          method: "DELETE",
+          headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error("Failed to clear history.");
+
+        showToast("Audit logs cleared successfully.", "success");
+        loadHistoryRecords("");
+      } catch (err) {
+        showToast(err.message, "danger");
+      }
+    }
+  </script>
+</body>
+</html>
